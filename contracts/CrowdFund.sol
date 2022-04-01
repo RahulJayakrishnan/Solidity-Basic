@@ -23,6 +23,15 @@ contract CrowdFund{
         addresses.push(msg.sender);
     }
 
+    function drain() payable onlyOwner public {
+        require(payable(msg.sender).send(address(this).balance));
+        for (uint i=0; i < addresses.length; i++) {
+            addressToFundsMapping[addresses[i]] = 0;
+        }
+        addresses = new address[](0);
+
+    }
+
     function getEtherUsdValue(uint256 _ethAmount) public view returns (uint) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(0x8A753747A1Fa494EC906cE90E9f37563A8AF630e);
         (
